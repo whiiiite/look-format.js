@@ -2,10 +2,10 @@ const txtExtensions = ['txt', 'log', 'md', 'cfg', 'ini', 'json', 'xml', 'csv', '
 const imgExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'tif', 'svg', 'webp', 'ico'];
 
 function view(selector, fileName, fileContent, options = null) {
-    return getView(fileName).view(selector, fileContent, options);
+    return _getView(fileName).view(selector, fileContent, options);
 }
 
-function getView(fileName) {
+function _getView(fileName) {
     const ext = _getFileExtension(fileName);
     if(txtExtensions.includes(ext)) {
         return new TextView();
