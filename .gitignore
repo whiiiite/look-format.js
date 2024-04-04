@@ -1,1 +1,7 @@
 *.html
+*.png
+*.bmp
+*.jpg
+*.jpeg
+img.*
+test-img.*

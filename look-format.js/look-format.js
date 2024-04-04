@@ -13,12 +13,12 @@ function _getView(fileName) {
         return new ImageView();
     }
 
-    return new TextView();
-}
+    function _getFileExtension(fileName) {
+        const splited = fileName.split('.');
+        return splited.length > 1 ? splited[splited.length - 1] : splited[0];
+    }
 
-function _getFileExtension(fileName) {
-    const splited = fileName.split('.');
-    return splited.length > 1 ? splited[splited.length - 1] : splited[0];
+    return new TextView();
 }
 
 // ===========================================
@@ -40,20 +40,28 @@ class ViewerContainer {
 class TextViewerContainer extends ViewerContainer {
     get(options = null) {
         const container = document.createElement('div');
-        container.style.whiteSpace = 'nowrap';
         container.style.display = 'flex';
         container.style.flexDirection = 'row';
+        container.style.overflow = 'auto';
 
         const lineCountContainer = document.createElement('div');
-        lineCountContainer.style.width = '3%';
-
-        container.appendChild(lineCountContainer);
+        lineCountContainer.style.width = 'fit-content';
+        lineCountContainer.style.marginRight = '10px';
+        lineCountContainer.classList.add('line-count-container');
 
         const stringsContainer = document.createElement('div');
-        stringsContainer.style.overflow = 'auto';
-        stringsContainer.style.whiteSpace = 'nowrap';
+        stringsContainer.classList.add('strings-container');
 
-        container.appendChild(stringsContainer);
+        const resultContainer = document.createElement('div');
+        resultContainer.style.whiteSpace = 'pre';
+        resultContainer.style.display = 'flex';
+        resultContainer.style.flexDirection = 'row';
+        resultContainer.classList.add('result-container');
+        
+        resultContainer.appendChild(lineCountContainer);
+        resultContainer.appendChild(stringsContainer);
+        container.appendChild(resultContainer);
+
         this._viewContainer = container;
         this._options = options;
 
@@ -64,18 +72,21 @@ class TextViewerContainer extends ViewerContainer {
         return container;
     }
 
+    _getResultContainer() {
+        return this._viewContainer.childNodes[0];
+    }
+
     getStringsContainer() {
-        return this._viewContainer.childNodes[1];
+        return this._viewContainer.childNodes[0].childNodes[1];
     }
 
     getLineCountContainer() {
-        return this._viewContainer.childNodes[0];
+        return this._viewContainer.childNodes[0].childNodes[0];
     }
 
     _getCountElement(count) {
         const div = document.createElement('div');
         div.textContent = count;
-        div.style.marginRight = '10px';
         div.style.userSelect = 'none';
         return div;
     }
@@ -97,11 +108,14 @@ class TextViewerContainer extends ViewerContainer {
     }
 
     _applyOptions() {
-        const { margin, padding, fontFamily, fontSize, numberColor, textColor } = this._options;
+        const { margin, padding, fontFamily, fontSize, numberColor, textColor, width, height, bg } = this._options;
         this._viewContainer.style.margin = margin || '';
         this._viewContainer.style.padding = padding || '';
         this._viewContainer.style.fontFamily = fontFamily || '';
         this._viewContainer.style.fontSize = fontSize || '';
+        this._viewContainer.style.width = width || '';
+        this._viewContainer.style.height = height || '';
+        this._viewContainer.style.backgroundColor = bg || '';
         this.getLineCountContainer().style.color = numberColor || '';
         this.getStringsContainer().style.color = textColor || '';
     }
@@ -127,8 +141,8 @@ class ImageViewerContainer extends ViewerContainer {
         return container;
     }
 
-    setImageBase64(string) {
-        this._img.src = string;
+    setImage(data) {
+        this._img.src = data;
     }
 
     _applyOptions() {
@@ -182,12 +196,12 @@ class TextView extends View {
 }
 
 class ImageView extends View {
-    view(selector, fileContent, options = null) {
+    view(selector, content, options = null) {
         const mainContainer = document.querySelector(selector);
         const containerObj = new ImageViewerContainer();
         const container = containerObj.get(options);
         mainContainer.appendChild(container)
-        containerObj.setImageBase64(fileContent);
+        containerObj.setImage(content);
 
         return container;
     }
