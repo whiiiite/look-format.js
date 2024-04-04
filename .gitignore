@@ -3,5 +3,8 @@
 *.bmp
 *.jpg
 *.jpeg
+*.mp4
+*.avi
+*.mpeg
 img.*
 test-img.*

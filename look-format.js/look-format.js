@@ -1,8 +1,9 @@
 const txtExtensions = ['txt', 'log', 'md', 'cfg', 'ini', 'json', 'xml', 'csv', 'yaml'];
 const imgExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'tif', 'svg', 'webp', 'ico'];
+const vidExtensions = ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'mpeg'];
 
-function view(selector, fileName, fileContent, options = null) {
-    return _getView(fileName).view(selector, fileContent, options);
+function view(selector, fileName, data, options = null) {
+    return _getView(fileName).view(selector, data, options);
 }
 
 function _getView(fileName) {
@@ -11,6 +12,8 @@ function _getView(fileName) {
         return new TextView();
     } else if(imgExtensions.includes(ext)) {
         return new ImageView();
+    } else if(vidExtensions.includes(ext)) {
+        return new VideoView();
     }
 
     function _getFileExtension(fileName) {
@@ -153,6 +156,40 @@ class ImageViewerContainer extends ViewerContainer {
         this._img.style.height = height || '';
     }
 }
+
+class VideoViewerContainer extends ViewerContainer {
+    _video;
+
+    get(options = null) {
+        const container = document.createElement('div');
+        const video = document.createElement('video');
+        video.setAttribute('controls', '');
+
+        container.appendChild(video);
+
+        this._video = video;
+        this._viewContainer = container;
+        this._options = options;
+
+        if(this._options) {
+            this._applyOptions();
+        }
+
+        return container;
+    }
+
+    setVideo(data) {
+        this._video.src = data;
+    }
+
+    _applyOptions() {
+        const { margin, padding, width, height } = this._options;
+        this._viewContainer.style.margin = margin || '';
+        this._viewContainer.style.padding = padding || '';
+        this._video.style.width = width || '';
+        this._video.style.height = height || '';
+    }
+}
 // ===========================================
 // END VIEWER CONTAINERS
 // ===========================================
@@ -202,6 +239,18 @@ class ImageView extends View {
         const container = containerObj.get(options);
         mainContainer.appendChild(container)
         containerObj.setImage(content);
+
+        return container;
+    }
+}
+
+class VideoView extends View {
+    view(selector, content, options = null) {
+        const mainContainer = document.querySelector(selector);
+        const containerObj = new VideoViewerContainer();
+        const container = containerObj.get(options);
+        mainContainer.appendChild(container)
+        containerObj.setVideo(content);
 
         return container;
     }
