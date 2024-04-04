@@ -1,5 +1,6 @@
 # look-format.js
 Lightweight js lib. File viewer for any file formats 
+
 using example: 
 ```
 <div id="file-viewer"><p>test</p></div>
