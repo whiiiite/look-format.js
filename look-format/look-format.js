@@ -3,12 +3,16 @@ const imgExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'tif', 'svg',
 const vidExtensions = ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'mpeg'];
 const audExtentions = ['mp3', 'wav', 'ogg', 'aac'];
 
-function view(selector, fileName, data, options = null) {
+async function view(selector, fileName, data, options = null) {
+    if (options.readFromNetwork) {
+        data = await _getFromNetwork(data);
+    }
+
     return _getView(fileName).view(selector, data, options);
 }
 
 function _getView(fileName) {
-    const ext = _getFileExtension(fileName);
+    const ext = _getFileExtension(fileName).toLowerCase();
     if(txtExtensions.includes(ext)) {
         return new TextView();
     } else if(imgExtensions.includes(ext)) {
@@ -25,6 +29,14 @@ function _getView(fileName) {
     }
 
     return new TextView();
+}
+
+async function _getFromNetwork(address) {
+    const response = await fetch(address, {}) // type: Promise<Response>
+    if (!response.ok) {
+        throw Error(response.statusText)
+    }
+    return response.text();
 }
 
 // ===========================================
@@ -114,7 +126,7 @@ class TextViewerContainer extends ViewerContainer {
     }
 
     _applyOptions() {
-        const { margin, padding, fontFamily, fontSize, numberColor, textColor, width, height, bg } = this._options;
+        const { margin, padding, fontFamily, fontSize, numberColor, textColor, width, height, bg, numerated } = this._options;
         this._viewContainer.style.margin = margin || '';
         this._viewContainer.style.padding = padding || '';
         this._viewContainer.style.fontFamily = fontFamily || '';
@@ -124,6 +136,7 @@ class TextViewerContainer extends ViewerContainer {
         this._viewContainer.style.backgroundColor = bg || '';
         this.getLineCountContainer().style.color = numberColor || '';
         this.getStringsContainer().style.color = textColor || '';
+        this.getLineCountContainer().style.display =  (typeof numerated !== 'undefined' ? numerated : true)  ? 'block' : 'none';
     }
 }
 
