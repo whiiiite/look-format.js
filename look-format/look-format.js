@@ -1,10 +1,10 @@
-const txtExtensions = ['txt', 'log', 'md', 'cfg', 'ini', 'json', 'xml', 'csv', 'yaml'];
+const txtExtensions = ['txt', 'log', 'md', 'cfg', 'ini', 'json', 'xml', 'csv', 'yaml', 'html'];
 const imgExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'tif', 'svg', 'webp', 'ico'];
 const vidExtensions = ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'mpeg'];
 const audExtentions = ['mp3', 'wav', 'ogg', 'aac'];
 
 async function view(selector, fileName, data, options = null) {
-    if (options.readFromNetwork) {
+    if (options.readTextFromNetwork) {
         data = await _getFromNetwork(data);
     }
 
