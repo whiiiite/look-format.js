@@ -4,8 +4,10 @@ const vidExtensions = ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'mpeg'];
 const audExtentions = ['mp3', 'wav', 'ogg', 'aac'];
 
 async function view(selector, fileName, data, options = null) {
-    if (options.readTextFromNetwork) {
-        data = await _getFromNetwork(data);
+    if(options) {
+        if (options.readTextFromNetwork) {
+            data = await _getFromNetwork(data);
+        }
     }
 
     return _getView(fileName).view(selector, data, options);
