@@ -34,7 +34,7 @@ function _getView(fileName) {
 }
 
 async function _getFromNetwork(address) {
-    const response = await fetch(address, {}) // type: Promise<Response>
+    const response = await fetch(address, {})
     if (!response.ok) {
         throw Error(response.statusText)
     }
